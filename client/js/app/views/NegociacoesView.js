@@ -24,8 +24,8 @@ class NegociacoesView extends View {
         </tbody>
         <tfoot>
             <tr>
-            <td colspan='3'></td>
-            <td>${model.negociacoes.reduce((totalNegociacao, negociacao) => totalNegociacao + negociacao.volume, 0)}</td>
+            <td colspan='3'>Total: </td>
+            <td> ${model.volumeTotal}</td>
             </tr>
         </tfoot>
     </table> `;
