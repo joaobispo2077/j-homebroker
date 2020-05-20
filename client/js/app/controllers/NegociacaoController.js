@@ -40,15 +40,25 @@ class NegociacaoController {
     importaNegociacoes() {
         let service = new NegociacaoService();
 
-        service.obterNegociacoesDaSemana((erro, negociacoes) => {
-            if (erro) {
-                this._mensagem.text = erro;
-                return;
-            }
+        service
+            .obterNegociacoes()
+            .then(negociacoes => {
+                negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+                this._mensagem.texto = 'Negociações do período importadas com sucesso';
+            })
+            .catch(error => this._mensagem.texto = error);
 
-            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociações importadas com sucesso';
-        });
+        // Promise.all([
+        //         service.obterNegociacoesDaSemana(),
+        //         service.obterNegociacoesDaSemanaAnterior(),
+        //         service.obterNegociacoesDaSemanaRetrasada()
+        //     ])
+        //     .then((negociacoes) => {
+        //         negociacoes
+        //             .reduce((arrayAchatado, array) => arrayAchatado.concat(array), [])
+        //             .forEach((negociacao) => this._listaNegociacoes.adiciona(negociacao));
+        //         this._mensagem.texto = 'Negociações importadas com sucesso';
+        //     }).catch((error) => this._mensagem.texto = error);
 
     }
 
@@ -73,5 +83,9 @@ class NegociacaoController {
         this._inputValor.value = 0.0;
 
         this._inputData.focus();
+    }
+
+    ordena(coluna) {
+
     }
 }
