@@ -16,7 +16,7 @@ class NegociacaoController {
         this._listaNegociacoes = new Bind(
             new ListaNegociacoes(),
             new NegociacoesView($('#NegociacoesView')),
-            'adiciona', 'esvazia');
+            'adiciona', 'esvazia', 'ordena', 'inverteOrdem');
 
 
         this._mensagem = new Bind(
@@ -26,14 +26,25 @@ class NegociacaoController {
         // ProxyFactory.create(new Mensagem(), ['texto'], model => this._mensagemView.update(model));
 
 
+
+        this._ordemAtual = '';
     }
 
     adiciona(event) {
 
         event.preventDefault();
+
         this._listaNegociacoes.adiciona(this._crianegociacao());
         this._mensagem.texto = 'Negociação criada com sucesso';
         this._limpaFormulario();
+
+        // try {
+        //     this._listaNegociacoes.adiciona(this._criaNegociacao());
+        //     this._mensagem.texto = 'Negociação adicionada com sucesso'; 
+        //     this._limpaFormulario();   
+        // } catch(erro) {
+        //     this._mensagem.texto = erro;
+        // }
 
     }
 
@@ -86,6 +97,11 @@ class NegociacaoController {
     }
 
     ordena(coluna) {
-
+        if (this._ordemAtual == coluna) {
+            this._listaNegociacoes.inverteOrdem();
+        } else {
+            this._listaNegociacoes.ordena((a, b) => a[coluna] - b[coluna]);
+        }
+        this._ordemAtual = coluna;
     }
 }
