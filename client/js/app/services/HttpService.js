@@ -1,36 +1,53 @@
 class HttpService {
 
+    _handleErrors(res) {
+        if (!res.ok) throw new Error(res.statusText);
+        return res;
+    }
+
     get(url) {
 
-        return new Promise((resolve, reject) => {
+        return fetch(url)
+            .then(res => this._handleErrors(res))
+            .then(res => res.json());
 
-            let xhr = new XMLHttpRequest();
+        // return new Promise((resolve, reject) => {
 
-            xhr.open('GET', url);
+        //     let xhr = new XMLHttpRequest();
 
-            xhr.onreadystatechange = () => {
+        //     xhr.open('GET', url);
 
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
+        //     xhr.onreadystatechange = () => {
 
-                        console.log('obtendo as negociacoes do servidor');
-                        //xhr.responseText trás um JSON, que, é um arquvio TEXTO escrito em sintaxe de um objeto Javascript
-                        //A função JSON.parse() transforma um arquivo JSON em um objeto Javascript
-                        resolve(JSON.parse(xhr.responseText));
+        //         if (xhr.readyState == 4) {
+        //             if (xhr.status == 200) {
+
+        //                 console.log('obtendo as negociacoes do servidor');
+        //                 //xhr.responseText trás um JSON, que, é um arquvio TEXTO escrito em sintaxe de um objeto Javascript
+        //                 //A função JSON.parse() transforma um arquivo JSON em um objeto Javascript
+        //                 resolve(JSON.parse(xhr.responseText));
 
 
-                    } else {
+        //             } else {
 
-                        reject(xhr.responseText);
-                    }
-                }
-            };
+        //                 reject(xhr.responseText);
+        //             }
+        //         }
+        //     };
 
-            xhr.send();
+        //     xhr.send();
 
-        });
+        // });
+
     }
     post(url, dado) {
+
+        return fetch(url, {
+                headers: { 'Content-type': 'application/json' },
+                method: 'post',
+                body: JSON.stringify(dado)
+            })
+            .then(res => this._handleErrors(res));
 
 
         return new Promise((resolve, reject) => {
