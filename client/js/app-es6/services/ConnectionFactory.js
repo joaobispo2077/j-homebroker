@@ -1,77 +1,74 @@
-var ConnectionFactory = (function() {
+const stores = ['negociacoes'];
+const version = 3;
+const dbName = 'J-HomeBroker';
 
-    const stores = ['negociacoes'];
-    const version = 3;
-    const dbName = 'J-HomeBroker';
+let connection = null;
 
-    var connection = null;
+let close = null;
 
-    var close = null;
+export class ConnectionFactory {
 
-    return class ConnectionFactory {
-
-        constructor() {
-            throw new Error('Não é possível criar instâncias de ConnectionFactory');
-        }
+    constructor() {
+        throw new Error('Não é possível criar instâncias de ConnectionFactory');
+    }
 
 
-        static getConnection() {
+    static getConnection() {
 
-            return new Promise((resolve, reject) => {
-                let openRequest = window.indexedDB.open(dbName, version);
+        return new Promise((resolve, reject) => {
+            let openRequest = window.indexedDB.open(dbName, version);
 
 
-                openRequest.onupgradeneeded = e => {
-                    ConnectionFactory._createStores(e.target.result);
+            openRequest.onupgradeneeded = e => {
+                ConnectionFactory._createStores(e.target.result);
 
+            };
+
+            openRequest.onsuccess = e => {
+                console.log('nice bro');
+
+                if (!connection) {
+                    connection = e.target.result
+                    close = connection.close.bind(connection);
+                    connection.close = function() {
+                        throw new Error('Você não pode fechar diretamente a conexão');
+                    }
                 };
-
-                openRequest.onsuccess = e => {
-                    console.log('nice bro');
-
-                    if (!connection) {
-                        connection = e.target.result
-                        close = connection.close.bind(connection);
-                        connection.close = function() {
-                            throw new Error('Você não pode fechar diretamente a conexão');
-                        }
-                    };
-                    resolve(connection);
+                resolve(connection);
 
 
-                };
+            };
 
-                openRequest.onerror = e => {
+            openRequest.onerror = e => {
 
-                    reject(e.target.error.name);
+                reject(e.target.error.name);
 
-                };
+            };
 
-            });
-
-        }
-
-        static _createStores(connection) {
-
-            stores.forEach(stores => {
-                if (connection.objectStoreNames.contains(store))
-                    connection.deleteObjectStore(store);
-
-                connection.createObjectStore(store, { autoIncrement: true });
-            });
-
-        }
-
-        static closeConnection() {
-            if (connection) {
-                // Reflect.apply(close, connection, []);
-                close();
-                connection = null;
-            }
-        }
-
-
-
+        });
 
     }
-})();
+
+    static _createStores(connection) {
+
+        stores.forEach(stores => {
+            if (connection.objectStoreNames.contains(store))
+                connection.deleteObjectStore(store);
+
+            connection.createObjectStore(store, { autoIncrement: true });
+        });
+
+    }
+
+    static closeConnection() {
+        if (connection) {
+            // Reflect.apply(close, connection, []);
+            close();
+            connection = null;
+        }
+    }
+
+
+
+
+}

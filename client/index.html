@@ -14,7 +14,7 @@
 
     <h1 class="text-center">Negociações</h1>
     <div id="mensagemView"></div>
-    <form class="form" onsubmit="negociacaoController.adiciona(event)">
+    <form class="form">
 
         <div class="form-group">
             <label for="data">Data</label>
@@ -38,7 +38,7 @@
         <!-- <button onclick="negociacaoController.importaNegociacoes()" class="btn btn-primary b-utton text-center" type="button">
             Importar Negociações
         </button> -->
-        <button onclick="negociacaoController.apaga()" class="btn btn-primary b-utton text-center" type="button">
+        <button id="btn_apaga" class="btn btn-primary b-utton text-center" type="button">
             Apagar
         </button>
     </div>
@@ -49,7 +49,16 @@
 
 
     <!-- <script src="js/index.js"></script> -->
-    <script src="js/app/polyfill/fetch.js"></script>
+    <script src="./node_modules/systemjs/dist/system.js"></script>
+
+    <script>
+        System.defaultJSExtensions = true;
+        System.import('js/app/boot').catch(function(err) {
+            console.error(err.message);
+        });
+    </script>
+
+    <!-- <script src="js/app/polyfill/fetch.js"></script>
     <script src="js/app/models/Negociacao.js"></script>
     <script src="js/app/controllers/NegociacaoController.js"></script>
     <script src="js/app/helpers/DateHelper.js"></script>
@@ -64,11 +73,11 @@
     <script src="js/app/services/ConnectionFactory.js"></script>
     <script src="js/app/dao/NegociacaoDao.js"></script>
 
-    <script src="js/app/helpers/Bind.js"></script>
+    <script src="js/app/helpers/Bind.js"></script> -->
 
-    <script>
+    <!-- <script>
         let negociacaoController = new NegociacaoController();
-    </script>
+    </script> -->
 
 
 </body>
